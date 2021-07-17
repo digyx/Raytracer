@@ -15,6 +15,12 @@ pub fn new(a: f32, b: f32, c: f32) -> Vec3 {
     Vec3([a,b,c])
 }
 
+pub fn dot(a: Vec3, b: Vec3) -> f32 {
+    a.0[0] * b.0[0] +
+    a.0[1] * b.0[1] +
+    a.0[2] * b.0[2]
+}
+
 impl Vec3 {
     pub fn x(&self) -> f32 {
         self.0[0].clone()

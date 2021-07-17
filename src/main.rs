@@ -41,7 +41,7 @@ fn main() {
     }
 
     for j in (0..IMAGE_HEIGHT).rev() {
-        print!("\rScanlines Remaining {}", j);
+        print!("\rCasting...{:.2}%", (1.0 - j as f32 / IMAGE_HEIGHT as f32) * 100.0);
         for i in 0..IMAGE_WIDTH {
             let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
             let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
