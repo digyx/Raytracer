@@ -7,7 +7,7 @@ use super::vec3::Colour;
 pub fn write_colour(f: &mut File, colour: Colour) {
     let res = f.write(format!(
         "{} {} {}\n", 
-        i32_265(colour.x()), i32_265(colour.y()), i32_265(colour.z())
+        i32_256(colour.x()), i32_256(colour.y()), i32_256(colour.z())
     ).as_bytes());
 
     if res.is_err() {
@@ -16,6 +16,6 @@ pub fn write_colour(f: &mut File, colour: Colour) {
     }
 }
 
-fn i32_265(f: f32) -> i32 {
-    (256.0 * f) as i32
+fn i32_256(f: f32) -> i32 {
+    (255.9999 * f) as i32
 }

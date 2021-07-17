@@ -4,7 +4,7 @@ use std::fmt::Display;
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3([f32; 3]);
 
-type Point3 = Vec3;  // 3D Point
+pub type Point3 = Vec3;  // 3D Point
 pub type Colour = Vec3;  // RGB Colour
 
 pub fn new(a: f32, b: f32, c: f32) -> Vec3 {
@@ -26,6 +26,10 @@ impl Vec3 {
 
     pub fn len(&self) -> f32 {
         (self.0[0] * self.0[0] + self.0[1] * self.0[1] + self.0[2] * self.0[2]).sqrt()
+    }
+
+    pub fn unit(&self) -> Vec3 {
+        *self / self.len()
     }
 }
 
@@ -83,6 +87,18 @@ impl Mul<f32> for Vec3 {
             self.0[0] * rhs,
             self.0[1] * rhs,
             self.0[2] * rhs,
+        ])
+    }
+}
+
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3([
+            self * rhs.0[0],
+            self * rhs.0[1],
+            self * rhs.0[2],
         ])
     }
 }
