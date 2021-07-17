@@ -1,13 +1,33 @@
+use std::env;
+
 use std::fs::File;
 use std::io::prelude::*;
+use std::process::exit;
+
+mod vec3;
+mod colour;
 
 const IMAGE_HEIGHT: i32 = 256;
 const IMAGE_WIDTH: i32 = 256;
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    if args[1] == "test" {
+        image_gen_test();
+    }
+}
+
+fn image_gen_test() {
     println!("Generating...");
 
-    let mut contents = format!("P3\n{} {}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
+    let mut f = File::create("target/out.ppm").unwrap();
+    let res = writeln!(f, "P3\n{} {}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
+
+    if res.is_err() {
+        println!("error: {}", res.unwrap_err());
+        exit(1);
+    }
 
     for j in (0..IMAGE_HEIGHT).rev() {
         print!("\rScanlines Remaining {}", j);
@@ -16,20 +36,10 @@ fn main() {
             let g = j as f32 / (IMAGE_HEIGHT - 1) as f32;
             let b = 0.25;
 
-            let ir: i32 = (256 as f32 * r) as i32;
-            let ig: i32 = (256 as f32 * g) as i32;
-            let ib: i32 = (256 as f32 * b) as i32;
-
-            contents.push_str(format!("{} {} {}\n", ir, ig, ib).as_str());
+            let c: vec3::Colour = vec3::new(r,g,b);
+            colour::write_colour(&mut f, c);
         }
     }
 
-    let mut f = File::create("target/out.ppm").unwrap();
-
-    let res = f.write_all(contents.as_bytes());
-
-    match res {
-        Err(_) => println!("\nFailed...shit."),
-        _ => println!("\nDone.")
-    }
+    println!("\nDone.");
 }
