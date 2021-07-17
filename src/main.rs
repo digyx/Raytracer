@@ -5,11 +5,9 @@ use std::io::prelude::*;
 use std::process::exit;
 
 mod vec3;
-mod colour;
 mod ray;
 
 use vec3::{Colour};
-use ray::Ray;
 
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
@@ -53,18 +51,11 @@ fn main() {
                 lower_left_corner + u * horizontal + v * vertical - origin
             );
 
-            colour::write_colour(&mut f, ray_colour(r));
+            r.colour().write(&mut f);
         }
     }
 
     println!("\nDone.")
-}
-
-fn ray_colour(r: Ray) -> Colour {
-    let unit_dir = r.direction().unit();
-    let t = 0.5*(unit_dir.y() + 1.0);
-
-    (1.0 - t) * vec3::new(1.0, 1.0, 1.0) + t * vec3::new(0.5, 0.7, 1.0)
 }
 
 fn image_gen_test() {
@@ -86,7 +77,7 @@ fn image_gen_test() {
             let b = 0.25;
 
             let c: Colour = vec3::new(r,g,b);
-            colour::write_colour(&mut f, c);
+            c.write(&mut f);
         }
     }
 

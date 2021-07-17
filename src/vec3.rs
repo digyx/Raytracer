@@ -1,6 +1,10 @@
 use std::ops::{Add, AddAssign, Div, Mul, Sub, Neg};
 use std::fmt::Display;
 
+use std::fs::File;
+use std::io::prelude::*;
+use std::process::exit;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3([f32; 3]);
 
@@ -124,5 +128,23 @@ impl Neg for Vec3 {
             -self.0[1],
             -self.0[2]
         ])
+    }
+}
+
+// Colour Only (shh, not enforced)
+impl Vec3 {
+    pub fn write(&self, f: &mut File) {
+        let r = (255.9999 * self.x()) as i32;
+        let g = (255.9999 * self.y()) as i32;
+        let b = (255.9999 * self.z()) as i32;
+
+        let res = f.write(format!(
+            "{} {} {}\n", r, g, b
+        ).as_bytes());
+
+        if res.is_err() {
+            println!("error: {}", res.unwrap_err());
+            exit(1);
+        }
     }
 }
