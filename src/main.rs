@@ -9,7 +9,7 @@ mod vec3;
 mod ray;
 mod objects;
 
-use crate::vec3::{Colour};
+use crate::vec3::{Colour, Point3};
 use crate::objects::World;
 use crate::objects::sphere;
 
@@ -26,9 +26,9 @@ fn main() {
     // World
     let world: World = World(
         vec![
-            Arc::new(sphere::new(vec3::new(0.0,    0.0, -1.0), 0.5)),
-            Arc::new(sphere::new(vec3::new(1.0,    0.0, -1.0), 0.25)),
-            Arc::new(sphere::new(vec3::new(0.0, -100.5, -1.0), 100.0))
+            Arc::new(sphere::new(Point3(0.0,    0.0, -1.0),  0.5)),
+            Arc::new(sphere::new(Point3(1.0,    0.0, -1.0),  0.25)),
+            Arc::new(sphere::new(Point3(0.0, -100.5, -1.0), 100.0))
         ]
     );
 
@@ -39,10 +39,10 @@ fn main() {
     let viewport_width = ASPECT_RATIO * viewport_height;
     let focal_length = 1.0;
 
-    let origin = vec3::new(0.0, 0.0,0.0);
-    let horizontal = vec3::new(viewport_width, 0.0, 0.0);
-    let vertical = vec3::new(0.0, viewport_height, 0.0);
-    let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - vec3::new(0.0, 0.0, focal_length);
+    let origin = Point3(0.0, 0.0,0.0);
+    let horizontal = Point3(viewport_width, 0.0, 0.0);
+    let vertical = Point3(0.0, viewport_height, 0.0);
+    let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - Point3(0.0, 0.0, focal_length);
 
     // Render
     let mut f = File::create("target/out.ppm").unwrap();
@@ -89,7 +89,7 @@ fn image_gen_test() {
             let g = j as f32 / (IMAGE_HEIGHT - 1) as f32;
             let b = 0.25;
 
-            let c: Colour = vec3::new(r,g,b);
+            let c: Colour = Colour(r,g,b);
             c.write(&mut f);
         }
     }
