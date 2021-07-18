@@ -28,7 +28,7 @@ impl Ray {
     }
 
     pub fn colour(&self, world: World) -> Colour {
-        match world.hit(self, -1.0, 1.0) {
+        match world.hit(self, 0.0, f32::INFINITY) {
             Some(rec) => {
                 0.5 * (rec.normal() + Colour(1.0, 1.0, 1.0))
             },

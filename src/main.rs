@@ -26,8 +26,8 @@ fn main() {
     // World
     let world: World = World(
         vec![
-            Arc::new(sphere::new(Point3(0.0,    0.0, -1.0),  0.5)),
-            Arc::new(sphere::new(Point3(1.0,    0.0, -1.0),  0.25)),
+            Arc::new(sphere::new(Point3(0.0,    0.0, -1.0), 0.5)),
+            Arc::new(sphere::new(Point3(1.0,    0.0, -1.0), 0.25)),
             Arc::new(sphere::new(Point3(0.0, -100.5, -1.0), 100.0))
         ]
     );
