@@ -1,4 +1,5 @@
 use std::env;
+use std::sync::Arc;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -6,8 +7,11 @@ use std::process::exit;
 
 mod vec3;
 mod ray;
+mod objects;
 
-use vec3::{Colour};
+use crate::vec3::{Colour};
+use crate::objects::World;
+use crate::objects::sphere;
 
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
@@ -19,13 +23,22 @@ fn main() {
         image_gen_test();
     }
 
+    // World
+    let world: World = World(
+        vec![
+            Arc::new(sphere::new(vec3::new(0.0,    0.0, -1.0), 0.5)),
+            Arc::new(sphere::new(vec3::new(1.0,    0.0, -1.0), 0.25)),
+            Arc::new(sphere::new(vec3::new(0.0, -100.5, -1.0), 100.0))
+        ]
+    );
+
+    // Camera
     const ASPECT_RATIO: f32 = IMAGE_WIDTH as f32 / IMAGE_HEIGHT as f32;
 
     let viewport_height = 2.0;
     let viewport_width = ASPECT_RATIO * viewport_height;
     let focal_length = 1.0;
 
-    // Camera
     let origin = vec3::new(0.0, 0.0,0.0);
     let horizontal = vec3::new(viewport_width, 0.0, 0.0);
     let vertical = vec3::new(0.0, viewport_height, 0.0);
@@ -51,7 +64,7 @@ fn main() {
                 lower_left_corner + u * horizontal + v * vertical - origin
             );
 
-            r.colour().write(&mut f);
+            r.colour(world.clone()).write(&mut f);
         }
     }
 
