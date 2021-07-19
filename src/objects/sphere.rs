@@ -3,7 +3,6 @@ use crate::vec3::Point3;
 
 use super::{HitRecord, Hittable};
 
-#[derive(Debug,Copy,Clone)]
 pub struct Sphere {
     center: Point3,
     radius: f32

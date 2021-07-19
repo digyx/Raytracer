@@ -18,7 +18,7 @@ use crate::camera::Camera;
 
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
-const SAMPLES_PER_PX: i32 = 10;
+const SAMPLES_PER_PX: i32 = 30;
 const MAX_REFLECTIONS: i32 = 10;
 
 fn main() {
@@ -30,7 +30,7 @@ fn main() {
     }
 
     // World
-    let world  = World::new(
+    let world = World::new(
         vec![
             Arc::new(Sphere::new(Point3::new(0.0,    0.0, -1.0), 0.5)),
             Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0))
@@ -47,7 +47,7 @@ fn main() {
     }
 
     let cam = Camera::new();
-    cam.render(&world, &mut f);
+    cam.render(Arc::new(world), &mut f);
 
     println!("\nDone.")
 }

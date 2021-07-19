@@ -1,9 +1,10 @@
+use std::sync::Arc;
+
 use crate::MAX_REFLECTIONS;
 
 use crate::vec3::{Point3, Colour, Vec3};
 use crate::objects::{World};
 
-#[derive(Debug,Copy,Clone)]
 pub struct Ray {
     origin: Point3,
     direction: Vec3,
@@ -31,8 +32,8 @@ impl Ray {
         self.origin() + t * self.direction()
     }
 
-    pub fn cast(&self, world: &World) -> Colour {
-        if self.depth > MAX_REFLECTIONS {
+    pub fn cast(&self, world: &Arc<World>) -> Colour {
+        if self.depth >= MAX_REFLECTIONS {
             return Colour::new(0.0, 0.0, 0.0)
         }
 

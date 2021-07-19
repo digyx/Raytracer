@@ -35,22 +35,20 @@ impl Vec3 {
 
             let v = Vec3(x, y, z);
 
-            if dot(v, v) >= 1.0 {continue}
-
-            return v.unit()
+            if dot(v, v) < 1.0 {return v}
         }
     }
 
     pub fn x(&self) -> f32 {
-        self.0.clone()
+        self.0
     }
 
     pub fn y(&self) -> f32 {
-        self.1.clone()
+        self.1
     }
 
     pub fn z(&self) -> f32 {
-        self.2.clone()
+        self.2
     }
 
     pub fn len(&self) -> f32 {

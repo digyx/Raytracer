@@ -31,11 +31,10 @@ pub trait Hittable {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
 
-#[derive(Clone)]
-pub struct World(Vec<Arc<dyn Hittable>>);
+pub struct World(Vec<Arc<dyn Hittable + Send + Sync>>);
 
 impl World {
-    pub fn new(v: Vec<Arc<dyn Hittable>>) -> World{
+    pub fn new(v: Vec<Arc<dyn Hittable + Send + Sync>>) -> World{
         World(v)
     }
 
