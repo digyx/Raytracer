@@ -35,7 +35,7 @@ impl Vec3 {
 
             let v = Vec3(x, y, z);
 
-            if dot(v, v) < 1.0 {return v}
+            if dot(v, v) < 1.0 {return v.unit()}
         }
     }
 

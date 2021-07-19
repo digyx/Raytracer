@@ -18,7 +18,7 @@ use crate::camera::Camera;
 
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
-const SAMPLES_PER_PX: i32 = 30;
+const SAMPLES_PER_PX: i32 = 50;
 const MAX_REFLECTIONS: i32 = 10;
 
 fn main() {
@@ -26,6 +26,11 @@ fn main() {
 
     if args.contains(&String::from("test")) {
         image_gen_test();
+        exit(0);
+    }
+
+    if args.contains(&String::from("rand")) {
+        r();
         exit(0);
     }
 
@@ -77,4 +82,11 @@ fn image_gen_test() {
     }
 
     println!("\nDone.");
+}
+
+
+fn r() {
+    for _ in 1..100 {
+        println!("{}", 2.0 * rand::random::<f32>() - 1.0);
+    }
 }

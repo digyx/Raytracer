@@ -37,7 +37,7 @@ impl Ray {
             return Colour::new(0.0, 0.0, 0.0)
         }
 
-        match world.hit(self, 0.0, f32::INFINITY) {
+        match world.hit(self, 0.001, f32::INFINITY) {
             Some(rec) => {
                 let target = rec.point() + rec.normal() + Vec3::new_rand();
                 let child = Self::child(
