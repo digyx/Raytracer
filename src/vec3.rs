@@ -5,6 +5,8 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::process::exit;
 
+use rand::random;
+
 use crate::SAMPLES_PER_PX;
 
 #[derive(Debug, Clone, Copy)]
@@ -23,6 +25,20 @@ pub fn dot(a: Vec3, b: Vec3) -> f32 {
 impl Vec3 {
     pub fn new(a: f32, b: f32, c: f32) -> Vec3 {
         Vec3(a, b, c)
+    }
+
+    pub fn new_rand() -> Vec3 {
+        loop {
+            let x = 2.0 * random::<f32>() - 1.0;
+            let y = 2.0 * random::<f32>() - 1.0;
+            let z = 2.0 * random::<f32>() - 1.0;
+
+            let v = Vec3(x, y, z);
+
+            if dot(v, v) >= 1.0 {continue}
+
+            return v.unit()
+        }
     }
 
     pub fn x(&self) -> f32 {
@@ -161,8 +177,12 @@ impl Colour {
 }
 
 fn clamp(n: f32) -> f32 {
-    if n < 0.0 {return 0.0}
-    if n > 0.999 {return 255.999}
+    // Gamma Correction
+    let adjusted_colour = n.sqrt();
 
-    256.0 * n
+    // Clamp between 0 and ~1
+    if adjusted_colour < 0.0 {return 0.0}
+    if adjusted_colour > 0.999 {return 255.999}
+
+    256.0 * adjusted_colour
 }

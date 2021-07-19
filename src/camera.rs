@@ -1,11 +1,10 @@
 use std::fs::File;
 
-use rand::random;
+use crate::{IMAGE_HEIGHT, IMAGE_WIDTH};
 
-use crate::{IMAGE_HEIGHT, IMAGE_WIDTH, SAMPLES_PER_PX};
+use crate::pixel::Pixel;
 use crate::objects::World;
-use crate::vec3::{Colour, Point3, Vec3};
-use crate::ray::Ray;
+use crate::vec3::{Point3, Vec3};
 
 pub struct Camera {
     origin: Point3,
@@ -29,27 +28,30 @@ impl Camera {
         Camera{origin, lower_left_corner, horizontal, vertical}
     }
 
-    pub fn render(self, world: World, f: &mut File) -> Option<String> {
+    pub fn render(self, world: &World, f: &mut File) {
         for j in (0..IMAGE_HEIGHT).rev() {
-            print!("\rCasting...{:.2}%", (1.0 - j as f32 / IMAGE_HEIGHT as f32) * 100.0);
             for i in 0..IMAGE_WIDTH {
-                let mut pixel = Colour::new(0.0, 0.0, 0.0);
-                for _ in 1..SAMPLES_PER_PX {
-                    let u = (i as f32 + random::<f32>()) / (IMAGE_WIDTH - 1) as f32;
-                    let v = (j as f32 + random::<f32>()) / (IMAGE_HEIGHT - 1) as f32;
-                    
-                    let r = Ray::new(
-                        self.origin, 
-                        self.lower_left_corner + u * self.horizontal + v * self.vertical - self.origin
-                    );
-
-                    pixel += r.colour(world.clone());
-                }
+                progress(i, j);
                 
-                pixel.write(f);
+                let mut px = Pixel::new(
+                    i,
+                    j,
+                    self.horizontal,
+                    self.vertical
+                );
+
+                px.render(self.origin, self.lower_left_corner, world).write(f);
             }
         }
-
-        None
     }
+}
+
+
+fn progress(i: i32, j: i32) {
+    let total = (IMAGE_WIDTH * IMAGE_HEIGHT) as f32;
+    let current = (IMAGE_WIDTH * (IMAGE_HEIGHT - j - 1) + i) as f32;
+
+    let percent = 100.0 * (current / total);
+
+    print!("\rCasting...{:.2}%", percent);
 }

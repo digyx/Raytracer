@@ -14,6 +14,10 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
+    pub fn point(&self) -> Vec3 {
+        self.point
+    }
+
     pub fn normal(&self) -> Vec3 {
         self.normal
     }
@@ -28,10 +32,14 @@ pub trait Hittable {
 }
 
 #[derive(Clone)]
-pub struct World(pub Vec<Arc<dyn Hittable>>);
+pub struct World(Vec<Arc<dyn Hittable>>);
 
 impl World {
-    pub fn hit(self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+    pub fn new(v: Vec<Arc<dyn Hittable>>) -> World{
+        World(v)
+    }
+
+    pub fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let mut res:Option<HitRecord> = None;
         let mut closest_so_far = t_max;
 

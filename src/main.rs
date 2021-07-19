@@ -7,6 +7,7 @@ use std::process::exit;
 
 mod vec3;
 mod ray;
+mod pixel;
 mod objects;
 mod camera;
 
@@ -18,6 +19,7 @@ use crate::camera::Camera;
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
 const SAMPLES_PER_PX: i32 = 10;
+const MAX_REFLECTIONS: i32 = 10;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -28,10 +30,9 @@ fn main() {
     }
 
     // World
-    let world: World = World(
+    let world  = World::new(
         vec![
             Arc::new(Sphere::new(Point3::new(0.0,    0.0, -1.0), 0.5)),
-            Arc::new(Sphere::new(Point3::new(1.0,    0.0, -1.0), 0.25)),
             Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0))
         ]
     );
@@ -46,7 +47,7 @@ fn main() {
     }
 
     let cam = Camera::new();
-    cam.render(world, &mut f);
+    cam.render(&world, &mut f);
 
     println!("\nDone.")
 }
