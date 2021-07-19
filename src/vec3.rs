@@ -5,11 +5,13 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::process::exit;
 
-#[derive(Debug, Clone, Copy)]
-pub struct Vec3(pub f32, pub f32, pub f32);
+use crate::SAMPLES_PER_PX;
 
-pub use Vec3 as Point3;  // 3D Point
-pub use Vec3 as Colour;  // RGB Colour
+#[derive(Debug, Clone, Copy)]
+pub struct Vec3(f32, f32, f32);
+
+pub type Point3 = Vec3;  // 3D Point
+pub type Colour = Vec3;  // RGB Colour
 
 
 pub fn dot(a: Vec3, b: Vec3) -> f32 {
@@ -19,6 +21,10 @@ pub fn dot(a: Vec3, b: Vec3) -> f32 {
 }
 
 impl Vec3 {
+    pub fn new(a: f32, b: f32, c: f32) -> Vec3 {
+        Vec3(a, b, c)
+    }
+
     pub fn x(&self) -> f32 {
         self.0.clone()
     }
@@ -135,11 +141,13 @@ impl Neg for Vec3 {
 }
 
 // Colour Only (shh, not enforced)
-impl Vec3 {
+impl Colour {
     pub fn write(&self, f: &mut File) {
-        let r = (255.9999 * self.x()) as i32;
-        let g = (255.9999 * self.y()) as i32;
-        let b = (255.9999 * self.z()) as i32;
+        let scale = 1.0 / SAMPLES_PER_PX as f32;
+
+        let r = clamp(scale * self.x()) as i32;
+        let g = clamp(scale * self.y()) as i32;
+        let b = clamp(scale * self.z()) as i32;
 
         let res = f.write(format!(
             "{} {} {}\n", r, g, b
@@ -150,4 +158,11 @@ impl Vec3 {
             exit(1);
         }
     }
+}
+
+fn clamp(n: f32) -> f32 {
+    if n < 0.0 {return 0.0}
+    if n > 0.999 {return 255.999}
+
+    256.0 * n
 }

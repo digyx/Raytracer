@@ -9,8 +9,10 @@ pub struct Sphere {
     radius: f32
 }
 
-pub fn new(center: Point3, radius: f32) -> Sphere {
-    Sphere{center, radius}
+impl Sphere {
+    pub fn new(center: Point3, radius: f32) -> Sphere {
+        Sphere{center, radius}
+    }
 }
 
 impl Hittable for Sphere {

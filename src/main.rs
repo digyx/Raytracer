@@ -8,41 +8,33 @@ use std::process::exit;
 mod vec3;
 mod ray;
 mod objects;
+mod camera;
 
 use crate::vec3::{Colour, Point3};
 use crate::objects::World;
-use crate::objects::sphere;
+use crate::objects::sphere::Sphere;
+use crate::camera::Camera;
 
 const IMAGE_WIDTH: i32 = 640;
 const IMAGE_HEIGHT: i32 = 360;
+const SAMPLES_PER_PX: i32 = 10;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.contains(&String::from("test")) {
         image_gen_test();
+        exit(0);
     }
 
     // World
     let world: World = World(
         vec![
-            Arc::new(sphere::new(Point3(0.0,    0.0, -1.0), 0.5)),
-            Arc::new(sphere::new(Point3(1.0,    0.0, -1.0), 0.25)),
-            Arc::new(sphere::new(Point3(0.0, -100.5, -1.0), 100.0))
+            Arc::new(Sphere::new(Point3::new(0.0,    0.0, -1.0), 0.5)),
+            Arc::new(Sphere::new(Point3::new(1.0,    0.0, -1.0), 0.25)),
+            Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0))
         ]
     );
-
-    // Camera
-    const ASPECT_RATIO: f32 = IMAGE_WIDTH as f32 / IMAGE_HEIGHT as f32;
-
-    let viewport_height = 2.0;
-    let viewport_width = ASPECT_RATIO * viewport_height;
-    let focal_length = 1.0;
-
-    let origin = Point3(0.0, 0.0,0.0);
-    let horizontal = Point3(viewport_width, 0.0, 0.0);
-    let vertical = Point3(0.0, viewport_height, 0.0);
-    let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - Point3(0.0, 0.0, focal_length);
 
     // Render
     let mut f = File::create("target/out.ppm").unwrap();
@@ -53,20 +45,8 @@ fn main() {
         exit(1);
     }
 
-    for j in (0..IMAGE_HEIGHT).rev() {
-        print!("\rCasting...{:.2}%", (1.0 - j as f32 / IMAGE_HEIGHT as f32) * 100.0);
-        for i in 0..IMAGE_WIDTH {
-            let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
-            let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
-
-            let r = ray::new(
-                origin, 
-                lower_left_corner + u * horizontal + v * vertical - origin
-            );
-
-            r.colour(world.clone()).write(&mut f);
-        }
-    }
+    let cam = Camera::new();
+    cam.render(world, &mut f);
 
     println!("\nDone.")
 }
@@ -89,7 +69,8 @@ fn image_gen_test() {
             let g = j as f32 / (IMAGE_HEIGHT - 1) as f32;
             let b = 0.25;
 
-            let c: Colour = Colour(r,g,b);
+            let c = Colour::new(r,g,b);
+
             c.write(&mut f);
         }
     }
