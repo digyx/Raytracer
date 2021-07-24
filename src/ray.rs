@@ -39,17 +39,11 @@ impl Ray {
 
         match world.hit(self, 0.001, f32::INFINITY) {
             Some(rec) => {
-                let res = reflect(
+                let target = reflect(
                     self.direction,
                     rec.normal(),
                     rec.scatter()
                 );
-
-                if res.is_none() {
-                    return Colour::new(0.0, 0.0, 0.0);
-                }
-
-                let target = res.unwrap();
 
                 let child = Self::child(
                     rec.point(),
@@ -70,20 +64,14 @@ impl Ray {
 }
 
 
-fn reflect(input: Vec3, normal: Vec3, scatter: f32) -> Option<Vec3> {
+fn reflect(input: Vec3, normal: Vec3, scatter: f32) -> Vec3 {
     let reflection_vector = input - 2.0 * dot(input, normal) * normal;
 
-    if scatter == 0.0 && dot(reflection_vector, normal) > 0.0 {
-        return Some(reflection_vector)
-    } else if scatter == 0.0 {
-        return None
+    if scatter == 0.0 {
+        return reflection_vector
     }
 
     let mut v: Vec3;
-
-    if dot(reflection_vector, normal) <= 0.0 {
-        return None
-    }
 
     loop {
         let x = 2.0 * rand::random::<f32>() - 1.0;
@@ -95,5 +83,5 @@ fn reflect(input: Vec3, normal: Vec3, scatter: f32) -> Option<Vec3> {
         if dot(v, v) < 1.0 {break}
     }
 
-    Some((scatter * (normal + v) + (1.0 - scatter) * reflection_vector).unit())
+    (scatter * (normal + v) + (1.0 - scatter) * reflection_vector).unit()
 }
