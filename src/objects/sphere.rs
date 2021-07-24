@@ -25,7 +25,7 @@ impl Hittable for Sphere {
         let c = vec3::dot(oc, oc) - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c;
-        
+
         if discriminant < 0.0 {
             return None
         }
@@ -36,7 +36,7 @@ impl Hittable for Sphere {
 
         if root < t_min || root > t_max {
             root = (-half_b + sqrt_d) / a;
-            
+
             if root < t_min || root > t_max {
                 return None
             }
@@ -49,7 +49,7 @@ impl Hittable for Sphere {
         let front_face = vec3::dot(r.direction(), normal) < 0.0;
 
         let rec = HitRecord{
-            point, 
+            point,
             normal: if front_face{normal} else{-normal},
             t: root,
             front_face,

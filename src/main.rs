@@ -39,26 +39,26 @@ fn main() {
                 vec![
             Arc::new(Sphere::new(  // Left
                 Point3::new(-1.0, 0.0, -1.0),
-                0.5, 
-                0.0, 
+                0.5,
+                0.0,
                 Colour::new(0.8, 0.8, 0.8)
             )),
             Arc::new(Sphere::new(  // Center
                 Point3::new(0.0, 0.0, -1.0),
-                0.5, 
-                1.0, 
+                0.5,
+                1.0,
                 Colour::new(0.7, 0.3, 0.3)
             )),
             Arc::new(Sphere::new(  // Right
                 Point3::new(1.0, 0.0, -1.0),
-                0.5, 
-                0.0, 
+                0.5,
+                0.0,
                 Colour::new(0.8, 0.6, 0.2)
             )),
             Arc::new(Sphere::new(  // Ground
-                Point3::new(0.0, -100.5, -1.0), 
-                100.0, 
-                1.0, 
+                Point3::new(0.0, -100.5, -1.0),
+                100.0,
+                1.0,
                 Colour::new(0.8, 0.8, 0.0)
             ))
         ]

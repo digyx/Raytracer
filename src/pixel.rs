@@ -25,12 +25,12 @@ impl Pixel {
         for _ in 0..SAMPLES_PER_PX {
             let u = (self.x as f32 + random::<f32>()) / (IMAGE_WIDTH - 1) as f32;
             let v = (self.y as f32 + random::<f32>()) / (IMAGE_HEIGHT - 1) as f32;
-            
+
             let r = Ray::new(
-                cam_loc, 
+                cam_loc,
                 vport_origin + u * self.x_ray + v * self.y_ray - cam_loc
             );
-            
+
             self.colour += r.cast(&Arc::clone(&world));
         }
 

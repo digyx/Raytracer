@@ -52,8 +52,8 @@ impl Ray {
                 let target = res.unwrap();
 
                 let child = Self::child(
-                    rec.point(), 
-                    target - rec.point(), 
+                    rec.point(),
+                    target - rec.point(),
                     self.depth + 1
                 );
 
@@ -62,7 +62,7 @@ impl Ray {
             None => {
                 let unit_dir = self.direction().unit();
                 let t = 0.5*(unit_dir.y() + 1.0);
-        
+
                 (1.0 - t) * Colour::new(1.0, 1.0, 1.0) + t * Colour::new(0.5, 0.7, 1.0)
             }
         }

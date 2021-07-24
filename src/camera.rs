@@ -33,7 +33,7 @@ impl Camera {
 
     pub fn render(self, world: Arc<World>, f: &mut File) {
         let mut thread_vec = Vec::new();
-        
+
         for j in (0..IMAGE_HEIGHT).rev() {
             let world = Arc::clone(&world);
 
@@ -50,7 +50,7 @@ impl Camera {
                         self.horizontal,
                         self.vertical
                     );
-    
+
                     let c = px.render(self.origin, self.lower_left_corner, world);
                     line_vec.push(c);
                 }
