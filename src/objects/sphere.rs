@@ -1,16 +1,18 @@
-use crate::vec3;
+use crate::vec3::{self, Colour};
 use crate::vec3::Point3;
 
 use super::{HitRecord, Hittable};
+use super::material::Material;
 
 pub struct Sphere {
     center: Point3,
-    radius: f32
+    radius: f32,
+    material: Material
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f32) -> Sphere {
-        Sphere{center, radius}
+    pub fn new(center: Point3, radius: f32, scatter: f32, colour: Colour) -> Sphere {
+        Sphere{center, radius, material: Material::new(scatter, colour)}
     }
 }
 
@@ -50,7 +52,8 @@ impl Hittable for Sphere {
             point, 
             normal: if front_face{normal} else{-normal},
             t: root,
-            front_face
+            front_face,
+            material: self.material
         };
 
         Some(rec)

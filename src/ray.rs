@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::MAX_REFLECTIONS;
 
-use crate::vec3::{Point3, Colour, Vec3};
+use crate::vec3::{Colour, Point3, Vec3, dot};
 use crate::objects::{World};
 
 pub struct Ray {
@@ -39,15 +39,25 @@ impl Ray {
 
         match world.hit(self, 0.001, f32::INFINITY) {
             Some(rec) => {
-                let target = rec.point() + rec.normal() + Vec3::new_rand();
+                let res = reflect(
+                    self.direction,
+                    rec.normal(),
+                    rec.scatter()
+                );
+
+                if res.is_none() {
+                    return Colour::new(0.0, 0.0, 0.0);
+                }
+
+                let target = res.unwrap();
+
                 let child = Self::child(
                     rec.point(), 
                     target - rec.point(), 
-                    self.depth + 1,
-
+                    self.depth + 1
                 );
 
-                0.5 * child.cast(world)
+                rec.colour() * child.cast(world)
             },
             None => {
                 let unit_dir = self.direction().unit();
@@ -57,4 +67,33 @@ impl Ray {
             }
         }
     }
+}
+
+
+fn reflect(input: Vec3, normal: Vec3, scatter: f32) -> Option<Vec3> {
+    let reflection_vector = input - 2.0 * dot(input, normal) * normal;
+
+    if scatter == 0.0 && dot(reflection_vector, normal) > 0.0 {
+        return Some(reflection_vector)
+    } else if scatter == 0.0 {
+        return None
+    }
+
+    let mut v: Vec3;
+
+    if dot(reflection_vector, normal) <= 0.0 {
+        return None
+    }
+
+    loop {
+        let x = 2.0 * rand::random::<f32>() - 1.0;
+        let y = 2.0 * rand::random::<f32>() - 1.0;
+        let z = 2.0 * rand::random::<f32>() - 1.0;
+
+        v = Vec3::new(x, y, z);
+
+        if dot(v, v) < 1.0 {break}
+    }
+
+    Some((scatter * (normal + v) + (1.0 - scatter) * reflection_vector).unit())
 }

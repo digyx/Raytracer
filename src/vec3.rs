@@ -5,8 +5,6 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::process::exit;
 
-use rand::random;
-
 use crate::SAMPLES_PER_PX;
 
 #[derive(Debug, Clone, Copy)]
@@ -25,18 +23,6 @@ pub fn dot(a: Vec3, b: Vec3) -> f32 {
 impl Vec3 {
     pub fn new(a: f32, b: f32, c: f32) -> Vec3 {
         Vec3(a, b, c)
-    }
-
-    pub fn new_rand() -> Vec3 {
-        loop {
-            let x = 2.0 * random::<f32>() - 1.0;
-            let y = 2.0 * random::<f32>() - 1.0;
-            let z = 2.0 * random::<f32>() - 1.0;
-
-            let v = Vec3(x, y, z);
-
-            if dot(v, v) < 1.0 {return v.unit()}
-        }
     }
 
     pub fn x(&self) -> f32 {
@@ -103,6 +89,18 @@ impl Sub for Vec3 {
 
     fn sub(self, rhs: Self) -> Self::Output {
         self + -rhs
+    }
+}
+
+impl Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3(
+            self.0 * rhs.0,
+            self.1 * rhs.1,
+            self.2 * rhs.2,
+        )
     }
 }
 

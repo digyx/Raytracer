@@ -1,16 +1,19 @@
 use std::sync::Arc;
 
 use crate::ray::Ray; 
-use crate::vec3::{Point3, Vec3};
+use crate::vec3::{Colour, Point3, Vec3};
+use material::Material;
 
 pub mod sphere;
+pub mod material;
 
 #[derive(Debug,Copy,Clone)]
 pub struct HitRecord {
     point: Point3,
     normal: Vec3,
     t: f32,
-    front_face: bool
+    front_face: bool,
+    material: Material
 }
 
 impl HitRecord {
@@ -20,6 +23,14 @@ impl HitRecord {
 
     pub fn normal(&self) -> Vec3 {
         self.normal
+    }
+
+    pub fn scatter(&self) -> f32 {
+        self.material.scatter()
+    }
+
+    pub fn colour(&self) -> Colour {
+        self.material.colour()
     }
 
     fn t(&self) -> f32 {
